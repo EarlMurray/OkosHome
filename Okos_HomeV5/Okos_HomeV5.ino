@@ -8,15 +8,13 @@
 SoftwareSerial espSerial(10, 11); // RX, TX
 long int baudRate = 9600;
 /**************************WiFi/Server Details*********************************/ 
-char ssid[] = "Murray_Secure";
+char ssid[] = "";
 char pass[] = "kkUPWE3RPFrA";
 int status = WL_IDLE_STATUS; 
 char server[] = "94.174.54.253";
-char topicA[] = "livingroom/okoshome/temp";
-char topicB[] = "livingroom/okoshome/rh";
-char topicC[] = "livingroom/okoshome/dust";
+char topic[] = "okoshome";
 char clientId[] = "testclient101";
-const char* user = "earl";
+const char* user = "";
 const char* userpass = "";
  
 WiFiEspClient wifi;
@@ -88,20 +86,20 @@ void loop() {
   
   if((err = dht11.read(DHTPin, &temp, &humidity, NULL)) != SimpleDHTErrSuccess)
   {
-    mqttClient.publish(topicA, "temp failed"); 
-    mqttClient.publish(topicB, "rh failed");
+    mqttClient.publish(topic, "temp failed"); 
+    mqttClient.publish(topic, "rh failed");
   }
   else
   {
     prefix.toCharArray(full, 100);
     dtostrf(temp, 5, 0, result);
     strcat(full, result);
-    mqttClient.publish(topicA, full);
+    mqttClient.publish(topic, full);
     prefix = "RH:";
     prefix.toCharArray(full, 100);
     dtostrf(humidity, 5, 0, result);
     strcat(full, result);
-    mqttClient.publish(topicA, full);
+    mqttClient.publish(topic, full);
   }
 
   /*************************Publish to MQTT Broker*********************************/
@@ -109,7 +107,7 @@ void loop() {
   prefix.toCharArray(full, 100);
   dtostrf(dustDensity, 8, 2, result);
   strcat(full, result);
-  mqttClient.publish(topicA, full);
+  mqttClient.publish(topic, full);
    
   if (!mqttClient.connected()) {
     reconnect();
